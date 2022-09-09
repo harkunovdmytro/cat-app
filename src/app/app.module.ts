@@ -1,22 +1,31 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CatFilterComponent } from './cat-filter/cat-filter.component';
+import { CatListComponent } from './cat-list/cat-list.component';
+import { AppComponent } from './app.component';
+
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { breedReducer } from './cat-store/cat.reducer';
+import { CatEffects } from './cat-store/cat.effect';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CatFilterComponent,
+    CatListComponent,
   ],
   imports: [
     BrowserModule,
-    StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([]),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    StoreModule.forRoot({ breed: breedReducer }),
+    EffectsModule.forRoot([CatEffects]),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule { };
