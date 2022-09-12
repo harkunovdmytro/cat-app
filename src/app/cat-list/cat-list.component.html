@@ -1,6 +1,8 @@
-<ul>
-    <li *ngFor="let cat of cats">{{ cat.name }}</li>
-</ul>
-<ul>
-    <li *ngFor="let cat of cats$ | async">{{ cat.name }}</li>
-</ul>
+<section class="cat-list">
+    <div
+        class="cat-card"
+        *ngFor="let cat of cats$ | async"
+    >
+        <img [src]="cat.url">
+    </div>
+</section>

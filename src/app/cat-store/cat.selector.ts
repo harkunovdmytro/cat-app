@@ -1,7 +1,26 @@
 import { createSelector, createFeatureSelector } from "@ngrx/store";
-import { Breed } from "../interfaces/breed";
+import { CatState } from "./cat.reducer";
 
 export const selectBreed = createSelector(
-    createFeatureSelector('breed'),
-    (breeds: Breed[]) => breeds,
+    createFeatureSelector('breeds'),
+    (state: CatState) => state.breeds,
+);
+
+export const selectCats = createSelector(
+    createFeatureSelector('breeds'),
+    (state: CatState) => state.cats,
+);
+
+export const selectAll = createSelector(
+    createFeatureSelector('breeds'),
+    (state: CatState) => state
+);
+
+export const selectSearch = createSelector(
+    createFeatureSelector('breeds'),
+    (state: CatState) => state.search
+);
+export const selectLength = createSelector(
+    createFeatureSelector('breeds'),
+    (state: CatState) => state.search.length
 );
