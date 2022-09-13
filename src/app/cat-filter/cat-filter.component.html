@@ -1,11 +1,19 @@
 <p>CatSearch</p>
-<form>
-    <mat-form-field appearance="fill">
-        <mat-select (valueChange)="getCats($event)" >
+<form [formGroup]="form">
+    <mat-form-field>
+        <mat-select formControlName="category">
             <mat-option
-                *ngFor="let breed of breeds$ |async"
-                [value]="breed.id"
-            >{{breed.name}}</mat-option>
+                *ngFor="let category of categories; let i = index"
+                [value]="i"
+            >{{category.name | titlecase}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select formControlName="categoryItem">
+            <mat-option
+                *ngFor="let item of categoryItems$ |async"
+                [value]="item.id"
+            >{{item.name | titlecase}}</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-paginator

@@ -7,32 +7,33 @@ import { CatService } from "../services/cat-service.service";
 
 @Injectable()
 export class CatEffects {
-    loadBreeds$ = createEffect(
+    loadCategoryItems$ = createEffect(
         () => this.actions$.pipe(
-            ofType('Load Breeds'),
-            switchMap(() => (this.catService.getBreeds())),
+            ofType('Load Category Items'),
+            switchMap(({ searching }) => this.catService.getCategoryItems(searching)),
         ).pipe(
-            map((breeds) => ({ type: 'Breeds Loaded', breeds })),
+            map((categoryContent: any) => {
+                console.log(categoryContent)
+                return {
+                    type: 'Category Items Loaded',
+                    categoryItems: categoryContent.body,
+                    length: categoryContent.headers.get('pagination-count'),
+                }
+            }),
             catchError(() => EMPTY)
         )
     );
 
-    loadCats$ = createEffect(
+    loadCategoryList$ = createEffect(
         () => this.actions$.pipe(
-            ofType('Load Cats'),
-            switchMap((breed) => (this.catService.getCats(breed))),
+            ofType('Load Category Content'),
+            switchMap((props) => (this.catService.getCategoryContent(props))),
         ).pipe(
-            map((cats: any) => {
-                console.log(cats.headers.get('pagination-count'))
-                console.log(cats.headers.get('pagination-page'))
-                console.log(cats)
+            map((content) => {
                 return {
-                    type: 'Cats Loaded',
-                    cats: cats.body,
-                    search: {
-                        page: cats.headers.get('pagination-page'),
-                        length: cats.headers.get('pagination-count'),
-                    }
+                    type: 'Category Content Loaded',
+                    categoryContent: content.body,
+                    length: content.headers.get('pagination-count')
                 }
             }),
             catchError(() => EMPTY)

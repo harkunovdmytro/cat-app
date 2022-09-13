@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { loadBreeds, loadCats } from '../cat-store/cat.action';
-import { selectBreed, selectLength } from '../cat-store/cat.selector';
+import * as actions from '../cat-store/cat.action';
+import { selectCategoryContent, selectCategoryItems, selectLength } from '../cat-store/cat.selector';
 import { MatPaginator } from '@angular/material/paginator';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-cat-filter',
@@ -10,43 +11,75 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrls: ['./cat-filter.component.scss'],
 })
 export class CatFilterComponent implements OnInit, AfterViewInit {
-  breeds$ = this.store.select(selectBreed);
-  length$ = this.store.select(selectLength);
+  form = new FormGroup({
+    category: new FormControl(''),
+    categoryItem: new FormControl(''),
+  });
 
-  breed!: string;
+  categories = [
+    { name: 'Category', items: 'categories', searchParam: 'category_ids' },
+    { name: 'Breed', items: 'breeds', searchParam: 'breed_ids' },
+  ];
+
+  length$ = this.store.select(selectLength);
+  categoryItems$ = this.store.select(selectCategoryItems);
+  categoryContent$ = this.store.select(selectCategoryContent);
+
   limit = 10;
   page = 0;
+
+  currentCategory = '';
+  currentCategoryIdName = '';
+  currentCategoryId = '';
 
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(private store: Store) { };
 
   ngOnInit(): void {
-    this.store.dispatch(loadBreeds());
+    this.form.get('category')?.valueChanges.subscribe(
+      (categoryId) => {
+        this.page = 0;
+        this.store.dispatch(actions.clearCategory());
+        this.currentCategory = this.categories[Number(categoryId)].items;
+        this.currentCategoryIdName = this.categories[Number(categoryId)].searchParam;
+        this.getCategoryItems(this.currentCategory);
+      }
+    );
+
+    this.form.get('categoryItem')?.valueChanges.subscribe(
+      (categoryItemId) => {
+        this.page = 0;
+        this.currentCategoryId = '' + categoryItemId;
+        this.getCategoryContent();
+      }
+    );
   };
 
   ngAfterViewInit() {
     this.paginator.page.subscribe((e) => this.changePagination(e));
   };
 
-  getCats(breed: string) {
-    this.breed = breed;
-    this.page = 0;
-    this.loadCats(breed);
-  };
+  getCategoryItems(searching: string | null) {
+    console.log('searching: ' + searching)
+    if (searching) {
+      this.store.dispatch(actions.loadCategoryItems({ searching: (<string>searching) }));
+    }
+  }
 
   changePagination(pagination: any) {
     this.limit = pagination.pageSize;
     this.page = pagination.pageIndex;
-    this.loadCats(this.breed);
+    this.getCategoryContent();
   };
 
-  loadCats(breed: string) {
-    if (this.breed)
-      this.store.dispatch(loadCats({
-        breed,
+  getCategoryContent() {
+    if (this.currentCategory && this.currentCategoryId)
+      this.store.dispatch(actions.loadCategoryContent({
+        category: this.currentCategoryIdName,
+        categoryId: this.currentCategoryId,
         page: this.page,
         limit: this.limit,
       }));
-  };
+  }
 }

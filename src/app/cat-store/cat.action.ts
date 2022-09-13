@@ -1,26 +1,29 @@
 import { createAction, props } from "@ngrx/store";
-import { Breed } from "../interfaces/breed";
-import { Cat } from "../interfaces/cat";
+import { CategoryContentItem } from "../interfaces/category-content-item";
 
-export const loadBreeds = createAction('Load Breeds');
-export const breedsLoaded = createAction('Breeds Loaded', props<{ breeds: Breed[] }>());
+export const clearCategory = createAction('Clear Category Content');
 
-export const setBreed = createAction('Set Breed', props<{ breed: string }>())
+export const loadCategoryItems = createAction(
+    'Load Category Items',
+    props<{ searching: string }>()
+);
 
-export const loadCats = createAction(
-    'Load Cats',
+export const categoryItemsLoaded = createAction(
+    'Category Items Loaded',
+    props<{ categoryItems: { id: number | string, name: string }[] }>()
+);
+
+export const loadCategoryContent = createAction(
+    'Load Category Content',
     props<{
-        breed: string,
+        category: string,
+        categoryId: string,
         page: number,
         limit: number
-    }>());
+    }>()
+)
 
-export const catsLoaded = createAction(
-    'Cats Loaded',
-    props<{
-        cats: Cat[], search: {
-            page: number;
-            length: number;
-        }
-    }>());
-
+export const categoryContentLoaded = createAction(
+    'Category Content Loaded',
+    props<{ categoryContent: CategoryContentItem[], length: number }>()
+);
