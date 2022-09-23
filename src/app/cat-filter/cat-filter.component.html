@@ -1,26 +1,25 @@
-<p>CatSearch</p>
-<form [formGroup]="form">
-    <mat-form-field>
-        <mat-select formControlName="category">
-            <mat-option
-                *ngFor="let category of categories; let i = index"
-                [value]="i"
-            >{{category.name | titlecase}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-select formControlName="categoryItem">
-            <mat-option
-                *ngFor="let item of categoryItems$ |async"
-                [value]="item.id"
-            >{{item.name | titlecase}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-paginator
-        #paginator
-        aria-label="Select page"
-        [length]="length$ | async"
-        [pageSize]="limit"
-        [pageSizeOptions]="[5, 10, 20, 30]"
-    ></mat-paginator>
+<form [formGroup]="catSelects">
+  <mat-form-field>
+    <mat-select formControlName="category">
+      <mat-option
+        *ngFor="let category of (categoriesList$ | async); let i = index"
+        [value]="category.id"
+      >{{ category.name | titlecase }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select formControlName="breeds">
+      <mat-option
+        *ngFor="let breed of (breedsList$ | async)"
+        [value]="breed.id"
+      >{{ breed.name | titlecase }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-paginator
+    #paginator
+    aria-label="Select page"
+    [length]="contentsQuantity$ | async"
+    [pageSize]="limit"
+    [pageSizeOptions]="[5, 10, 20, 30]"
+  ></mat-paginator>
 </form>

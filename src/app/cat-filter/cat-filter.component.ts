@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import {Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {FormControl, FormGroup} from '@angular/forms';
 import * as actions from '../cat-store/cat.action';
-import { selectCategoryContent, selectCategoryItems, selectLength } from '../cat-store/cat.selector';
-import { MatPaginator } from '@angular/material/paginator';
-import { FormControl, FormGroup } from '@angular/forms';
+import {selectBreedsList, selectCategoriesList, selectContentQuantity} from '../cat-store/cat.selector';
 
 @Component({
   selector: 'app-cat-filter',
@@ -11,75 +11,72 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./cat-filter.component.scss'],
 })
 export class CatFilterComponent implements OnInit, AfterViewInit {
-  form = new FormGroup({
+  catSelects = new FormGroup({
     category: new FormControl(''),
-    categoryItem: new FormControl(''),
+    breeds: new FormControl(''),
   });
 
-  categories = [
-    { name: 'Category', items: 'categories', searchParam: 'category_ids' },
-    { name: 'Breed', items: 'breeds', searchParam: 'breed_ids' },
-  ];
+  contentsQuantity$ = this.store.select(selectContentQuantity);
 
-  length$ = this.store.select(selectLength);
-  categoryItems$ = this.store.select(selectCategoryItems);
-  categoryContent$ = this.store.select(selectCategoryContent);
+  categoriesList$ = this.store.select(selectCategoriesList);
+  breedsList$ = this.store.select(selectBreedsList);
 
+  breedId = '';
+  categoryId = '';
   limit = 10;
   page = 0;
 
-  currentCategory = '';
-  currentCategoryIdName = '';
-  currentCategoryId = '';
-
   @ViewChild('paginator') paginator!: MatPaginator;
 
-  constructor(private store: Store) { };
+  constructor(private store: Store) {
+  };
 
   ngOnInit(): void {
-    this.form.get('category')?.valueChanges.subscribe(
-      (categoryId) => {
-        this.page = 0;
-        this.store.dispatch(actions.clearCategory());
-        this.currentCategory = this.categories[Number(categoryId)].items;
-        this.currentCategoryIdName = this.categories[Number(categoryId)].searchParam;
-        this.getCategoryItems(this.currentCategory);
-      }
-    );
+    this.getContent();
 
-    this.form.get('categoryItem')?.valueChanges.subscribe(
-      (categoryItemId) => {
-        this.page = 0;
-        this.currentCategoryId = '' + categoryItemId;
-        this.getCategoryContent();
+    this.store.dispatch(actions.loadBreeds());
+    this.store.dispatch(actions.loadCategories());
+
+    this.catSelects.controls.breeds.valueChanges.subscribe((breedId): void => {
+      if (this.categoryId !== '') {
+        this.catSelects.controls.category.reset();
       }
-    );
+
+      this.breedId = breedId + '';
+      this.categoryId = ''
+
+      this.getContent();
+    })
+
+    this.catSelects.controls.category.valueChanges.subscribe((categoryId): void => {
+      if (this.breedId !== '') {
+        this.catSelects.controls.breeds.reset();
+      }
+
+      this.categoryId = categoryId + '';
+      this.breedId = '';
+
+      this.getContent();
+    })
   };
 
-  ngAfterViewInit() {
-    this.paginator.page.subscribe((e) => this.changePagination(e));
-  };
-
-  getCategoryItems(searching: string | null) {
-    console.log('searching: ' + searching)
-    if (searching) {
-      this.store.dispatch(actions.loadCategoryItems({ searching: (<string>searching) }));
-    }
+  ngAfterViewInit(): void {
+    this.paginator.page.subscribe(((paginatorValues: PageEvent) => this.changePagination(paginatorValues)));
   }
 
-  changePagination(pagination: any) {
+  changePagination(pagination: PageEvent) {
     this.limit = pagination.pageSize;
     this.page = pagination.pageIndex;
-    this.getCategoryContent();
+
+    this.getContent();
   };
 
-  getCategoryContent() {
-    if (this.currentCategory && this.currentCategoryId)
-      this.store.dispatch(actions.loadCategoryContent({
-        category: this.currentCategoryIdName,
-        categoryId: this.currentCategoryId,
-        page: this.page,
-        limit: this.limit,
-      }));
+  private getContent(): void {
+    this.store.dispatch(actions.loadContent({
+      page: this.page,
+      limit: this.limit,
+      breed_ids: this.breedId,
+      category_ids: this.categoryId,
+    }));
   }
 }

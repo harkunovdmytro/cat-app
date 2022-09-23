@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { selectCategoryContent } from '../cat-store/cat.selector';
+import {Component} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {selectContent} from '../cat-store/cat.selector';
 
 @Component({
   selector: 'app-cat-list',
@@ -8,7 +8,8 @@ import { selectCategoryContent } from '../cat-store/cat.selector';
   styleUrls: ['./cat-list.component.scss'],
 })
 export class CatListComponent {
-  cats$ = this.store.select(selectCategoryContent);
+  cats$ = this.store.select(selectContent);
 
-  constructor(private store: Store) { };
+  constructor(private store: Store) {
+  };
 }

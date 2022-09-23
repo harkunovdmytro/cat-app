@@ -1,48 +1,51 @@
-import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { EMPTY } from "rxjs";
-import { map, catchError, switchMap } from "rxjs/operators";
-import { CatService } from "../services/cat-service.service";
-
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {EMPTY} from 'rxjs';
+import {map, catchError, switchMap} from 'rxjs/operators';
+import {CatService} from '../services/cat-service.service';
+import {CatRequestProperties} from "../interfaces/cat-request-properties";
 
 @Injectable()
 export class CatEffects {
-    loadCategoryItems$ = createEffect(
-        () => this.actions$.pipe(
-            ofType('Load Category Items'),
-            switchMap(({ searching }) => this.catService.getCategoryItems(searching)),
-        ).pipe(
-            map((categoryContent: any) => {
-                console.log(categoryContent)
-                return {
-                    type: 'Category Items Loaded',
-                    categoryItems: categoryContent.body,
-                    length: categoryContent.headers.get('pagination-count'),
-                }
-            }),
-            catchError(() => EMPTY)
-        )
-    );
+  loadBreeds$ = createEffect(
+    () => this.actions$
+      .pipe(
+        ofType('Load Breeds'),
+        switchMap(() => this.catService.getBreeds()),
+      ).pipe(
+        map((breeds) => ({type: 'Breeds Loaded', breeds}))
+      )
+  );
 
-    loadCategoryList$ = createEffect(
-        () => this.actions$.pipe(
-            ofType('Load Category Content'),
-            switchMap((props) => (this.catService.getCategoryContent(props))),
-        ).pipe(
-            map((content) => {
-                return {
-                    type: 'Category Content Loaded',
-                    categoryContent: content.body,
-                    length: content.headers.get('pagination-count')
-                }
-            }),
-            catchError(() => EMPTY)
-        )
-    );
+  loadCategories$ = createEffect(
+    () => this.actions$
+      .pipe(
+        ofType('Load Categories'),
+        switchMap(() => this.catService.getCategories())
+      ).pipe(
+        map((categories) => ({type: 'Categories Loaded', categories}))
+      )
+  );
 
+  loadContent$ = createEffect(
+    () => this.actions$.pipe(
+      ofType('Load Content'),
+      switchMap((getRequestProps: CatRequestProperties) => (this.catService.getContent(getRequestProps))),
+    ).pipe(
+      map((contentResponce) => {
+        return {
+          type: 'Content Loaded',
+          content: contentResponce.body,
+          contentsQuantity: contentResponce.headers.get('pagination-count')
+        }
+      }),
+      catchError(() => EMPTY),
+    )
+  );
 
-    constructor(
-        private actions$: Actions,
-        private catService: CatService,
-    ) { };
+  constructor(
+    private actions$: Actions,
+    private catService: CatService,
+  ) {
+  };
 }

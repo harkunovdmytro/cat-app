@@ -1,29 +1,29 @@
-import { createAction, props } from "@ngrx/store";
-import { CategoryContentItem } from "../interfaces/category-content-item";
+import {createAction, props} from "@ngrx/store";
+import {Breed} from "../interfaces/breed";
+import {Category} from "../interfaces/category";
+import {ContentItem} from "../interfaces/content-item";
+import {CatRequestProperties} from '../interfaces/cat-request-properties'
 
-export const clearCategory = createAction('Clear Category Content');
+export const loadCategories = createAction('Load Categories');
 
-export const loadCategoryItems = createAction(
-    'Load Category Items',
-    props<{ searching: string }>()
+export const categoriesLoaded = createAction(
+  'Categories Loaded',
+  props<{ categories: Category[] }>()
 );
 
-export const categoryItemsLoaded = createAction(
-    'Category Items Loaded',
-    props<{ categoryItems: { id: number | string, name: string }[] }>()
+export const loadBreeds = createAction('Load Breeds');
+
+export const breedsLoaded = createAction(
+  'Breeds Loaded',
+  props<{ breeds: Breed[] }>()
 );
 
-export const loadCategoryContent = createAction(
-    'Load Category Content',
-    props<{
-        category: string,
-        categoryId: string,
-        page: number,
-        limit: number
-    }>()
-)
+export const loadContent = createAction(
+  'Load Content',
+  props<CatRequestProperties>()
+);
 
-export const categoryContentLoaded = createAction(
-    'Category Content Loaded',
-    props<{ categoryContent: CategoryContentItem[], length: number }>()
+export const contentLoaded = createAction(
+  'Content Loaded',
+  props<{ content: ContentItem[], contentsQuantity: number }>()
 );
