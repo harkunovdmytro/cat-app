@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatSelectModule} from '@angular/material/select'
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 export const MaterialComponents = [
   MatSelectModule,
@@ -19,5 +19,4 @@ export const MaterialComponents = [
     MaterialComponents,
   ],
 })
-export class MaterialModule {
-}
+export class MaterialModule {}

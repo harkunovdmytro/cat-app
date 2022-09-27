@@ -1,82 +1,70 @@
-import {Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {FormControl, FormGroup} from '@angular/forms';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormControl, FormGroup } from '@angular/forms';
 import * as actions from '../cat-store/cat.action';
-import {selectBreedsList, selectCategoriesList, selectContentQuantity} from '../cat-store/cat.selector';
+import { selectBreedsList, selectCategoriesList, selectContentQuantity } from '../cat-store/cat.selector';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-cat-filter',
-  templateUrl: './cat-filter.component.html',
-  styleUrls: ['./cat-filter.component.scss'],
+    selector: 'app-cat-filter',
+    templateUrl: './cat-filter.component.html',
+    styleUrls: ['./cat-filter.component.scss'],
 })
-export class CatFilterComponent implements OnInit, AfterViewInit {
-  catSelects = new FormGroup({
-    category: new FormControl(''),
-    breeds: new FormControl(''),
-  });
+export class CatFilterComponent implements OnInit, AfterViewInit, OnDestroy {
+    catSelects = new FormGroup({
+        category: new FormControl(''),
+        breeds: new FormControl(''),
+    });
 
-  contentsQuantity$ = this.store.select(selectContentQuantity);
+    contentsQuantity$ = this.store.select(selectContentQuantity);
 
-  categoriesList$ = this.store.select(selectCategoriesList);
-  breedsList$ = this.store.select(selectBreedsList);
+    categoriesList$ = this.store.select(selectCategoriesList);
+    breedsList$ = this.store.select(selectBreedsList);
 
-  breedId = '';
-  categoryId = '';
-  limit = 10;
-  page = 0;
+    unsubscribeAllSubjects$ = new Subject();
 
-  @ViewChild('paginator') paginator!: MatPaginator;
+    pagination = {
+        limit: 10,
+        page: 0,
+    };
 
-  constructor(private store: Store) {
-  };
+    @ViewChild('paginator') paginator!: MatPaginator;
 
-  ngOnInit(): void {
-    this.getContent();
+    constructor(private store: Store) {}
 
-    this.store.dispatch(actions.loadBreeds());
-    this.store.dispatch(actions.loadCategories());
+    ngOnInit(): void {
+        this.getContent();
 
-    this.catSelects.controls.breeds.valueChanges.subscribe((breedId): void => {
-      if (this.categoryId !== '') {
-        this.catSelects.controls.category.reset();
-      }
+        this.store.dispatch(actions.loadBreeds());
+        this.store.dispatch(actions.loadCategories());
 
-      this.breedId = breedId + '';
-      this.categoryId = ''
+        this.catSelects.valueChanges
+            .pipe(takeUntil(this.unsubscribeAllSubjects$))
+            .subscribe(() => this.getContent());
+    }
 
-      this.getContent();
-    })
+    ngOnDestroy(){
+        this.unsubscribeAllSubjects$.next(null);
+    }
 
-    this.catSelects.controls.category.valueChanges.subscribe((categoryId): void => {
-      if (this.breedId !== '') {
-        this.catSelects.controls.breeds.reset();
-      }
+    ngAfterViewInit(): void {
+        this.paginator.page.subscribe((paginatorValues: PageEvent) => this.changePagination(paginatorValues));
+    }
 
-      this.categoryId = categoryId + '';
-      this.breedId = '';
+    changePagination(pagination: PageEvent) {
+        this.pagination.limit = pagination.pageSize;
+        this.pagination.page = pagination.pageIndex;
 
-      this.getContent();
-    })
-  };
+        this.getContent();
+    }
 
-  ngAfterViewInit(): void {
-    this.paginator.page.subscribe(((paginatorValues: PageEvent) => this.changePagination(paginatorValues)));
-  }
-
-  changePagination(pagination: PageEvent) {
-    this.limit = pagination.pageSize;
-    this.page = pagination.pageIndex;
-
-    this.getContent();
-  };
-
-  private getContent(): void {
-    this.store.dispatch(actions.loadContent({
-      page: this.page,
-      limit: this.limit,
-      breed_ids: this.breedId,
-      category_ids: this.categoryId,
-    }));
-  }
+    private getContent(): void {
+        this.store.dispatch(actions.loadContent({
+            page: this.pagination.page,
+            limit: this.pagination.limit,
+            breedIds: String(this.catSelects.controls.breeds.value),
+            categoryIds: String(this.catSelects.controls.category.value),
+        }));
+    }
 }

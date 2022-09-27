@@ -1,6 +1,7 @@
 <form [formGroup]="catSelects">
   <mat-form-field>
     <mat-select formControlName="category">
+      <mat-option [value]="''"></mat-option>
       <mat-option
         *ngFor="let category of (categoriesList$ | async); let i = index"
         [value]="category.id"
@@ -9,6 +10,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-select formControlName="breeds">
+      <mat-option [value]="''"></mat-option>
       <mat-option
         *ngFor="let breed of (breedsList$ | async)"
         [value]="breed.id"
@@ -19,7 +21,7 @@
     #paginator
     aria-label="Select page"
     [length]="contentsQuantity$ | async"
-    [pageSize]="limit"
+    [pageSize]="pagination.limit"
     [pageSizeOptions]="[5, 10, 20, 30]"
   ></mat-paginator>
 </form>

@@ -1,29 +1,29 @@
-import {createAction, props} from "@ngrx/store";
-import {Breed} from "../interfaces/breed";
-import {Category} from "../interfaces/category";
-import {ContentItem} from "../interfaces/content-item";
-import {CatRequestProperties} from '../interfaces/cat-request-properties'
+import { createAction, props } from '@ngrx/store';
+import { IBreed } from '../interfaces/breed';
+import { ICategory } from '../interfaces/category';
+import { IContentItem } from '../interfaces/content-item';
+import { ICatRequestProperties } from '../interfaces/cat-request-properties';
 
 export const loadCategories = createAction('Load Categories');
 
 export const categoriesLoaded = createAction(
   'Categories Loaded',
-  props<{ categories: Category[] }>()
+  props<{ categories: ICategory[] }>(),
 );
 
 export const loadBreeds = createAction('Load Breeds');
 
 export const breedsLoaded = createAction(
   'Breeds Loaded',
-  props<{ breeds: Breed[] }>()
+  props<{ breeds: IBreed[] }>(),
 );
 
 export const loadContent = createAction(
   'Load Content',
-  props<CatRequestProperties>()
+  props<ICatRequestProperties>(),
 );
 
 export const contentLoaded = createAction(
   'Content Loaded',
-  props<{ content: ContentItem[], contentsQuantity: number }>()
+  props<{ content: IContentItem[], contentsQuantity: number }>(),
 );

@@ -1,22 +1,25 @@
-import {createSelector, createFeatureSelector} from '@ngrx/store';
-import {CatState} from './cat.reducer';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { CatState } from './cat.reducer';
+
+export const breedsStoreKey = 'breeds';
+export const selectBreadsStore = createFeatureSelector<CatState>(breedsStoreKey);
 
 export const selectCategoriesList = createSelector(
-  createFeatureSelector('breeds'),
+    selectBreadsStore,
   (state: CatState) => state.categories,
 );
 
 export const selectBreedsList = createSelector(
-  createFeatureSelector('breeds'),
+  selectBreadsStore,
   (state: CatState) => state.breeds,
 );
 
 export const selectContent = createSelector(
-  createFeatureSelector('breeds'),
+  selectBreadsStore,
   (state: CatState) => state.content,
 );
 
 export const selectContentQuantity = createSelector(
-  createFeatureSelector('breeds'),
+  selectBreadsStore,
   (state: CatState) => state.contentsQuantity,
 );

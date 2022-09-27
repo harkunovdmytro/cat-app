@@ -1,3 +1,3 @@
-export interface ContentItem {
+export interface IContentItem {
   url: string;
 }

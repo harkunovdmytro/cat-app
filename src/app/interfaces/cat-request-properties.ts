@@ -1,6 +1,6 @@
-export interface CatRequestProperties {
-  category_ids: string;
-  breed_ids: string;
+export interface ICatRequestProperties {
+  categoryIds: string;
+  breedIds: string;
   page: number;
   limit: number;
 };
