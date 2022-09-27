@@ -12,38 +12,39 @@ import { IContentItem } from '../interfaces/content-item';
 
 @Injectable()
 export class CatEffects {
-    loadBreeds$ = createEffect(() => this.actions$.pipe(
-            ofType(actions.loadBreeds),
-            switchMap((): Observable<IBreed[]> => this.catService.getBreeds()),
-        ).pipe(
-            map(breeds => actions.breedsLoaded({ breeds })),
-        ),
-    );
+  loadBreeds$ = createEffect(() => this.actions$.pipe(
+      ofType(actions.loadBreeds),
+      switchMap((): Observable<IBreed[]> => this.catService.getBreeds()),
+    ).pipe(
+      map(breeds => actions.breedsLoaded({ breeds })),
+    ),
+  );
 
-    loadCategories$ = createEffect(() => this.actions$.pipe(
-            ofType(actions.loadCategories),
-            switchMap((): Observable<ICategory[]> => this.catService.getCategories()),
-        ).pipe(
-            map(categories => actions.categoriesLoaded({ categories })),
-        ),
-    );
+  loadCategories$ = createEffect(() => this.actions$.pipe(
+      ofType(actions.loadCategories),
+      switchMap((): Observable<ICategory[]> => this.catService.getCategories()),
+    ).pipe(
+      map(categories => actions.categoriesLoaded({ categories })),
+    ),
+  );
 
-    loadContent$ = createEffect(() => this.actions$.pipe(
-            ofType(actions.loadContent),
-            switchMap((getRequestProps: ICatRequestProperties) => {
-                return this.catService.getContent(getRequestProps);
-            }),
-        ).pipe(
-            map((contentResponce: HttpResponse<IContentItem[]>) => actions.contentLoaded({
-                content: contentResponce.body || [],
-                contentsQuantity: Number(contentResponce.headers.get('pagination-count')) ?? 0,
-            })),
-            catchError(() => EMPTY),
-        ),
-    );
+  loadContent$ = createEffect(() => this.actions$.pipe(
+      ofType(actions.loadContent),
+      switchMap((getRequestProps: ICatRequestProperties) => {
+        return this.catService.getContent(getRequestProps);
+      }),
+    ).pipe(
+      map((contentResponce: HttpResponse<IContentItem[]>) => actions.contentLoaded({
+        content: contentResponce.body || [],
+        contentsQuantity: Number(contentResponce.headers.get('pagination-count')) ?? 0,
+      })),
+      catchError(map(() => actions.contentNotLoaded())),
+    ),
+  );
 
-    constructor(
-        private actions$: Actions,
-        private catService: CatService,
-    ) {}
+  constructor(
+    private actions$: Actions,
+    private catService: CatService,
+  ) {
+  }
 }

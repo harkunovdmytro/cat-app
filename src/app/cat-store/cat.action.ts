@@ -27,3 +27,5 @@ export const contentLoaded = createAction(
   'Content Loaded',
   props<{ content: IContentItem[], contentsQuantity: number }>(),
 );
+
+export const contentNotLoaded = createAction('Content Not Loaded');

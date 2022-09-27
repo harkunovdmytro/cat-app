@@ -4,12 +4,12 @@ import { CatState } from './cat.reducer';
 export const breedsStoreKey = 'breeds';
 export const selectBreadsStore = createFeatureSelector<CatState>(breedsStoreKey);
 
-export const selectCategoriesList = createSelector(
+export const selectCategories = createSelector(
     selectBreadsStore,
   (state: CatState) => state.categories,
 );
 
-export const selectBreedsList = createSelector(
+export const selectBreeds = createSelector(
   selectBreadsStore,
   (state: CatState) => state.breeds,
 );
