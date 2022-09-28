@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectContent } from '../../cat-store/cat.selector';
+import { selectContent } from '../../store/cat.selector';
 
 @Component({
   selector: 'app-cat-list',

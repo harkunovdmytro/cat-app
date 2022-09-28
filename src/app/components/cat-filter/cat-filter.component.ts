@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular
 import { Store } from '@ngrx/store';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FormControl, FormGroup } from '@angular/forms';
-import * as actions from '../../cat-store/cat.action';
-import { selectBreeds, selectCategories, selectContentQuantity } from '../../cat-store/cat.selector';
+import * as actions from '../../store/cat.action';
+import { selectBreeds, selectCategories, selectContentQuantity } from '../../store/cat.selector';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

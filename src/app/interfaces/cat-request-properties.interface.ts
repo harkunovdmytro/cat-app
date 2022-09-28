@@ -3,4 +3,4 @@ export interface ICatRequestProperties {
   breedIds: string;
   page: number;
   limit: number;
-};
+}

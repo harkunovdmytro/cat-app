@@ -8,15 +8,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CatFilterComponent } from './components/cat-filter/cat-filter.component';
 import { CatListComponent } from './components/cat-list/cat-list.component';
 import { AppComponent } from './app.component';
-import { breedReducer } from './cat-store/cat.reducer';
-import { CatEffects } from './cat-store/cat.effect';
-import { MaterialModule } from './modules/material/material.module';
-import { CatModule } from './modules/cat-module/cat.module';
-import { breedsStoreKey } from './cat-store/cat.selector';
-import { CatInterceptor } from './services/cat.interceptor';
+import { breedReducer } from './store/cat.reducer';
+import { CatEffects } from './store/cat.effect';
+import { MaterialModule } from './material/material.module';
+import { breedsStoreKey } from './store/cat.selector';
+import { CatInterceptor } from './interceptors/cat.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { CatWrapperComponent } from './components/cat-wrapper/cat-wrapper.component';
+import { CatService } from './services/cat.service';
 
 @NgModule({
   declarations: [
@@ -35,9 +35,9 @@ import { CatWrapperComponent } from './components/cat-wrapper/cat-wrapper.compon
     EffectsModule.forRoot([CatEffects]),
     MaterialModule,
     ReactiveFormsModule,
-    CatModule,
   ],
   providers:[
+    CatService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CatInterceptor,

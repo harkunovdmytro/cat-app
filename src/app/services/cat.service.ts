@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { CatModule } from '../modules/cat-module/cat.module';
-import { ICatRequestProperties } from '../interfaces/cat-request-properties';
+import { ICatRequestProperties } from '../interfaces/cat-request-properties.interface';
 import { Observable } from 'rxjs';
-import { ICategory } from '../interfaces/category';
-import { IBreed } from '../interfaces/breed';
-import { IContentItem } from '../interfaces/content-item';
+import { ICategory } from '../interfaces/category.interface';
+import { IBreed } from '../interfaces/breed.interface';
+import { IContentItem } from '../interfaces/content-item.interface';
 
-@Injectable({
-  providedIn: CatModule,
-})
+@Injectable()
 export class CatService {
   constructor(private http: HttpClient) {
   }

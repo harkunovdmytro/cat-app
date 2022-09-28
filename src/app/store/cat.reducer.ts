@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import { IBreed } from '../interfaces/breed';
-import { ICategory } from '../interfaces/category';
-import { IContentItem } from '../interfaces/content-item';
+import { IBreed } from '../interfaces/breed.interface';
+import { ICategory } from '../interfaces/category.interface';
+import { IContentItem } from '../interfaces/content-item.interface';
 import * as actions from './cat.action';
 
 export interface CatState {
@@ -9,7 +9,7 @@ export interface CatState {
     categories: ICategory[];
     content: IContentItem[];
     contentsQuantity: number;
-};
+}
 
 export const breedEntity: CatState = {
     breeds: [],
